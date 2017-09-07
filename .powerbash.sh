@@ -98,7 +98,7 @@ __powerbash_complete() {
 
 __powerbash() {
   # define variables
-  POWERBASH_ICONS=( "⚑" "»" "♆" "☀" "♞" "☯" "☢" "❄" "+" "▶" )
+  POWERBASH_ICONS=( "⚑" "⑂" "♆" "☀" "♞" "☯" "☢" "❄" "+" "▶" )
   POWERBASH_ARROWS=( "⇠" "⇡" "⇢" "⇣" )
   POWERBASH_PY_VIRTUALENV_SYMBOL=${POWERBASH_ICONS[9]}
   POWERBASH_GIT_BRANCH_SYMBOL=${POWERBASH_ICONS[1]}
@@ -192,7 +192,7 @@ __powerbash() {
     [ "$aheadN" -gt 0 ] && marks+=" $POWERBASH_GIT_NEED_PUSH_SYMBOL$aheadN"
     [ "$behindN" -gt 0 ] && marks+=" $POWERBASH_GIT_NEED_PULL_SYMBOL$behindN"
 
-    printf "$COLOR_GIT $POWERBASH_GIT_BRANCH_SYMBOL$branch$marks $RESET"
+    printf "$COLOR_GIT $POWERBASH_GIT_BRANCH_SYMBOL $branch$marks $RESET"
   }
 
   __powerbash_user_display() {
@@ -290,7 +290,7 @@ __powerbash() {
     local symbol_bg=$COLOR_SYMBOL_USER
     [ $EUID -eq 0 ] && symbol_bg=$COLOR_SYMBOL_ROOT
 
-    printf "$symbol_bg \\$ $RESET"
+    printf "\n$symbol_bg \\$ $RESET"
   }
 
   __powerbash_rc_display() {
