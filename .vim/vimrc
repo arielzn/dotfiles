@@ -1,0 +1,24 @@
+colorscheme badwolf
+syntax on
+
+set number
+set cursorline
+set wildmenu
+
+" highlight last inserted text
+nnoremap gV `[v`]
+
+" for pgup and pgdown to work as usual
+nnoremap <silent> <PageUp> <C-U><C-U>
+vnoremap <silent> <PageUp> <C-U><C-U>
+inoremap <silent> <PageUp> <C-\><C-O><C-U><C-\><C-O><C-U>
+
+nnoremap <silent> <PageDown> <C-D><C-D>
+vnoremap <silent> <PageDown> <C-D><C-D>
+inoremap <silent> <PageDown> <C-\><C-O><C-D><C-\><C-O><C-D>
+
+" tabs navigation (Ctrl-t opens tab; Ctrl-h,-j move to left,right tabs)
+nmap <C-h> :tabprevious<CR>
+nmap <C-l> :tabnext<CR>
+nmap <C-t> :tabnew<CR>
+
