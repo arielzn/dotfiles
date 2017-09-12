@@ -28,7 +28,7 @@ powerbash() {
         *) echo "invalid option" ;;
       esac
     ;;
-    user|git|jobs|symbol|rc)
+    user|git|hg|jobs|symbol|rc)
       case "$2" in
         on|off) export "POWERBASH_${1^^}"="$2" ;;
         *) echo "invalid option" ;;
@@ -70,7 +70,7 @@ __powerbash_complete() {
 
   if [ $COMP_CWORD -eq 1 ]; then
     # first level options
-    option_list="reload prompt config py user host path git jobs symbol rc term"
+    option_list="reload prompt config py user host path git hg jobs symbol rc term"
   elif [ $COMP_CWORD -eq 2 ]; then
     # second level options
     case "${prev}" in
@@ -81,6 +81,7 @@ __powerbash_complete() {
         host) option_list="on off auto" ;;
         path) option_list="off full working short parted mini" ;;
          git) option_list="on off" ;;
+          hg) option_list="on off" ;;
         jobs) option_list="on off" ;;
       symbol) option_list="on off" ;;
           rc) option_list="on off" ;;
@@ -140,6 +141,7 @@ __powerbash() {
       COLOR_SSH="\[$(tput setaf 3)\]\[$(tput setab 0)\]"
       COLOR_DIR="\[$(tput setaf 7)\]\[$(tput setab 0)\]"
       COLOR_GIT="\[$(tput setaf 7)\]\[$(tput setab 4)\]"
+      COLOR_HG="\[$(tput setaf 7)\]\[$(tput setab 2)\]"
       COLOR_RC="\[$(tput setaf 7)\]\[$(tput setab 1)\]"
       COLOR_JOBS="\[$(tput setaf 7)\]\[$(tput setab 5)\]"
       COLOR_SYMBOL_USER="\[$(tput setaf 7)\]\[$(tput setab 2)\]"
@@ -151,6 +153,7 @@ __powerbash() {
       COLOR_SSH="\[$(tput setaf 3)\]\[$(tput setab 236)\]"
       COLOR_DIR="\[$(tput setaf 7)\]\[$(tput setab 236)\]"
       COLOR_GIT="\[$(tput setaf 15)\]\[$(tput setab 4)\]"
+      COLOR_HG="\[$(tput setaf 15)\]\[$(tput setab 22)\]"
       COLOR_RC="\[$(tput setaf 15)\]\[$(tput setab 9)\]"
       COLOR_JOBS="\[$(tput setaf 15)\]\[$(tput setab 5)\]"
       COLOR_PY_VIRTUALENV="\[$(tput setaf 15)\]\[$(tput setab 5)\]"
@@ -194,6 +197,30 @@ __powerbash() {
 
     printf "$COLOR_GIT $POWERBASH_GIT_BRANCH_SYMBOL $branch$marks $RESET"
   }
+
+  __powerbash_hg_display() {
+    [ -z "$POWERBASH_HG" ] && POWERBASH_HG="on" # sane default
+    [ "$POWERBASH_HG" == "off" ] && return # disable display
+    [ -x "$(which hg)" ] || return # hg not found
+
+    # get current branch name or short SHA1 hash for detached head
+    local branch="$(hg branch 2>/dev/null)"
+    [ -n "$branch" ] || return  # hg branch not found
+
+    local marks
+
+    # branch is modified?
+    [ -n "$(hg status)" ] && marks+=" $POWERBASH_GIT_BRANCH_CHANGED_SYMBOL"
+
+    # how many commits local branch is ahead/behind of remote?
+    local acommits="$(hg log -r "draft()" --template q)"
+    local aheadN=${#acommits}
+    # local behindN="$( )" this check would require repo connection
+    [ "$aheadN" -gt 0 ] && marks+=" $POWERBASH_GIT_NEED_PUSH_SYMBOL$aheadN"
+
+    printf "$COLOR_HG $POWERBASH_GIT_BRANCH_SYMBOL $branch$marks $RESET"
+  }
+
 
   __powerbash_user_display() {
     [ -z "$POWERBASH_USER" ] && POWERBASH_USER="on" # sane default
@@ -318,6 +345,7 @@ __powerbash() {
         PS1+="$(__powerbash_host_display)"
         PS1+="$(__powerbash_path_display)"
         PS1+="$(__powerbash_git_display)"
+        PS1+="$(__powerbash_hg_display)"
         PS1+="$(__powerbash_jobs_display)"
         PS1+="$(__powerbash_symbol_display)"
         PS1+="$(__powerbash_rc_display ${RETURN_CODE})"
