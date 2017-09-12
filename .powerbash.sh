@@ -146,10 +146,10 @@ __powerbash() {
       COLOR_SYMBOL_ROOT="\[$(tput setaf 7)\]\[$(tput setab 1)\]"
     else
       # 256 color support
-      COLOR_USER="\[$(tput setaf 15)\]\[$(tput setab 8)\]"
-      COLOR_SUDO="\[$(tput setaf 3)\]\[$(tput setab 8)\]"
-      COLOR_SSH="\[$(tput setaf 3)\]\[$(tput setab 8)\]"
-      COLOR_DIR="\[$(tput setaf 7)\]\[$(tput setab 8)\]"
+      COLOR_USER="\[$(tput setaf 15)\]\[$(tput setab 236)\]"
+      COLOR_SUDO="\[$(tput setaf 3)\]\[$(tput setab 236)\]"
+      COLOR_SSH="\[$(tput setaf 3)\]\[$(tput setab 236)\]"
+      COLOR_DIR="\[$(tput setaf 7)\]\[$(tput setab 236)\]"
       COLOR_GIT="\[$(tput setaf 15)\]\[$(tput setab 4)\]"
       COLOR_RC="\[$(tput setaf 15)\]\[$(tput setab 9)\]"
       COLOR_JOBS="\[$(tput setaf 15)\]\[$(tput setab 5)\]"
