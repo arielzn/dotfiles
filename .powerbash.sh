@@ -157,7 +157,7 @@ __powerbash() {
       COLOR_RC="\[$(tput setaf 15)\]\[$(tput setab 9)\]"
       COLOR_JOBS="\[$(tput setaf 15)\]\[$(tput setab 5)\]"
       COLOR_PY_VIRTUALENV="\[$(tput setaf 15)\]\[$(tput setab 5)\]"
-      COLOR_SYMBOL_USER="\[$(tput setaf 15)\]\[$(tput setab 2)\]"
+      COLOR_SYMBOL_USER="\[$(tput setaf 46)\]\[$(tput setab 236)\]"
       COLOR_SYMBOL_ROOT="\[$(tput setaf 15)\]\[$(tput setab 1)\]"
     fi
   }
