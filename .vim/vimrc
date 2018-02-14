@@ -1,9 +1,13 @@
-colorscheme wombat256
+
 syntax on
+colorscheme wombat256
+set t_Co=256
 
 set number
-set cursorline
 set wildmenu
+set cursorline
+set ignorecase
+set smartcase
 
 " highlight last inserted text
 nnoremap gV `[v`]
