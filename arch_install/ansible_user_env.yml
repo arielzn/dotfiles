@@ -1,0 +1,64 @@
+---
+#customize the environment of the local user
+- hosts: localhost
+  tasks:
+
+  - name: Clone dotfiles repo
+    git:
+      repo: 'https://github.com/arielzn/dotfiles.git'
+      dest: /tmp/dotfiles
+
+  - name: Copy powerbash.sh script
+    copy:
+      src: /tmp/dotfiles/.powerbash.sh
+      dest: ~/.powerbash.sh
+      remote_src: yes
+
+  - name: Customize bash
+    lineinfile:
+      dest: ~/.bashrc
+      line: "{{ item }}"
+    with_items:
+      - 'source ~/.powerbash.sh'
+      - 'powerbash host on'
+      - 'powerbash path full'
+      - 'powerbash hg off'
+
+  - name: Force an emtpy ~/.vim
+    file:
+      path: ~/.vim
+      state: absent
+
+  - name: Move vim dotfiles to ~/.vim
+    command: cp -r /tmp/dotfiles/.vim ~/
+
+  - name: Clone Vundle for vim
+    git:
+      repo: 'https://github.com/VundleVim/Vundle.vim.git'
+      dest: ~/.vim/bundle/Vundle.vim
+
+  - name: Insert Vundle configuration in ~/.vim/vimrc
+    blockinfile:
+      insertbefore: BOF
+      marker: '" {mark} Vundle plugin manager setup'
+      path: ~/.vim/vimrc
+      block: |
+        set nocompatible              " be iMproved, required
+        filetype off                  " required
+
+        "set the runtime path to include Vundle and initialize
+        set rtp+=~/.vim/bundle/Vundle.vim
+        call vundle#begin()
+
+        Plugin 'tpope/vim-vinegar'
+        Plugin 'vim-airline/vim-airline'
+        Plugin 'vim-airline/vim-airline-themes'
+
+        " All of your Plugins must be added before the following line
+        call vundle#end()            " required
+        filetype plugin indent on    " required
+
+        let g:airline_powerline_fonts = 1
+
+  - name: Install plugins
+    command: vim +PluginInstall +qall

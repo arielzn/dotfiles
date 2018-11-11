@@ -1,0 +1,159 @@
+---
+
+- hosts: localhost
+  tasks:
+
+  - name: Customize pacman.conf
+    lineinfile:
+      dest: /etc/pacman.conf
+      regexp: Color
+      line: 'Color'
+
+  - name: Install Intel GPU drivers
+    package:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - libva-intel-driver
+      - libva-vdpau-driver
+      - libva-utils
+      - libvdpau-va-gl
+      - vdpauinfo
+      - xf86-video-intel
+
+  - name: Install basic tools
+    package:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - base-devel
+      - bash
+      - bash-completion
+      - binutils
+      - dmidecode
+      - expac
+      - git
+      - htop
+      - iw
+      - mlocate
+      - namcap
+      - ntp
+      - p7zip
+      - screen
+      - vim
+      - xorg-xbacklight
+      - wget
+
+  - name: Install a basic Gnome DE
+    package:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - adwaita-icon-theme
+      - arc-gtk-theme
+      - arc-icon-theme
+      - alsa-utils
+      - baobab
+      - blueman
+      - eog
+      - evince
+      - file-roller
+      - gdm
+      - gedit
+      - gnome-backgrounds
+      - gnome-calculator
+      - gnome-control-center
+      - gnome-desktop
+      - gnome-font-viewer
+      - gnome-keyring
+      - gnome-screenshot
+      - gnome-session
+      - gnome-settings-daemon
+      - gnome-shell
+      - gnome-shell-extensions
+      - gnome-system-monitor
+      - gnome-terminal
+      - gnome-tweaks
+      - gnome-user-share
+      - gucharmap
+      - gvfs
+      - gvfs-afc
+      - gvfs-goa
+      - gvfs-google
+      - gvfs-gphoto2
+      - gvfs-mtp
+      - gvfs-nfs
+      - gvfs-smb
+      - mousetweaks
+      - mutter
+      - nautilus
+      - networkmanager
+      - networkmanager-openconnect
+      - networkmanager-openvpn
+      - numix-gtk-theme
+      - pamixer
+      - polkit-gnome
+      - soundconverter
+      - sushi
+      - totem
+      - tracker
+      - ttf-roboto
+      - vino
+
+  - name: Install i3 wm
+    package:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - awesome-terminal-fonts
+      - feh
+      - i3-wm
+      - i3blocks
+      - i3lock
+      - i3status
+      - network-manager-applet
+      - powerline
+
+  - name: Install extra stuff
+    package:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - firefox
+      - gimp
+      - libreoffice-fresh
+      - ttf-roboto
+      - vlc
+
+  - name: Get pikaur aur helper sources
+    get_url:
+      url: "https://aur.archlinux.org/cgit/aur.git/snapshot/{{ item }}"
+      dest: "/tmp/{{ item }}"
+    with_items:
+      - cower.tar.gz
+      - pikaur.tar.gz
+
+  - name: Insert global vim options in /etc/vimrc
+    blockinfile:
+      insertbefore: EOF
+      marker: '" {mark} Ansible managed set basic vim options'
+      path: /etc/vimrc
+      block: |
+        syntax on
+        colorscheme koehler
+        set t_Co=256
+        set number
+        set wildmenu
+        set cursorline
+        set ignorecase
+        set smartcase
+
+  - name: Ensure critical services are enabled
+    service:
+      name: "{{ item }}"
+      enabled: "yes"
+    with_items:
+      - ntpd
+      - gdm
+      - NetworkManager
+      - bluetooth
