@@ -9,6 +9,13 @@ set cursorline
 set ignorecase
 set smartcase
 
+" highlight extra whitespace at the end
+highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
+au ColorScheme * highlight ExtraWhitespace guibg=red
+au BufEnter * match ExtraWhitespace /\s\+$/
+au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+au InsertLeave * match ExtraWhiteSpace /\s\+$/
+
 " highlight last inserted text
 nnoremap gV `[v`]
 
