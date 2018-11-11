@@ -1,6 +1,6 @@
 
 syntax on
-colorscheme wombat256
+colorscheme gruvbox
 set t_Co=256
 
 set number
