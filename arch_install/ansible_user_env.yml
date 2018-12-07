@@ -19,10 +19,13 @@
       dest: ~/.bashrc
       line: "{{ item }}"
     with_items:
-      - 'source ~/.powerbash.sh'
-      - 'powerbash host on'
-      - 'powerbash path full'
-      - 'powerbash hg off'
+      - "alias ls='ls --color=auto'"
+      - "alias ll='ls -alFh'"
+      - "alias la='ls -A'"
+      - "source ~/.powerbash.sh"
+      - "powerbash host on"
+      - "powerbash path full"
+      - "powerbash hg off"
 
   - name: Force an emtpy ~/.vim
     file:
