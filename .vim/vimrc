@@ -34,3 +34,8 @@ nmap <C-h> :tabprevious<CR>
 nmap <C-l> :tabnext<CR>
 nmap <C-t> :tabnew<CR>
 
+"show tree in vim vinegar
+let g:netrw_liststyle = 3
+
+"remove all trailing whitespace by pressing F8
+nnoremap <F8> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
