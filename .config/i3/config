@@ -11,17 +11,6 @@ set $mod Mod4
 #font pango:DejaVu Sans Mono for Powerline Book 9
 font pango:Roboto Mono for Powerline Regular 9
 
-# This font is widely installed, provides lots of unicode glyphs, right-to-left
-# text rendering and scalability on retina/hidpi displays (thanks to pango).
-#font pango:DejaVu Sans Mono 8
-
-# Before i3 v4.8, we used to recommend this one as the default:
-# font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
-# The font above is very space-efficient, that is, it looks good, sharp and
-# clear in small sizes. However, its unicode glyph coverage is limited, the old
-# X core fonts rendering does not support right-to-left and this being a bitmap
-# font, it doesn’t scale on retina/hidpi displays.
-
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
@@ -32,11 +21,10 @@ bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-# bindsym $mod+d exec dmenu_run
-# There also is the (new) i3-dmenu-desktop which only displays applications
-# shipping a .desktop file. It is a wrapper around dmenu, so you need that
-# installed.
-bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+#bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+
+#use rofi as launcher, config in ~/.config/rofi/config
+bindsym $mod+d exec --no-startup-id "rofi -show drun -run-shell-command '{terminal} -e \\" {cmd}; read -n 1 -s\\"'"
 
 # change focus
 bindsym $mod+h focus left
@@ -102,7 +90,7 @@ set $workspace6 6
 set $workspace7 7
 set $workspace8 8
 set $workspace9 9
-set $workspace10 "10:"
+set $workspace10 "10:♪"
 
 # switch to workspace
 bindsym $mod+1 workspace $workspace1
@@ -133,6 +121,12 @@ bindsym $mod+Control+h move workspace to output left
 bindsym $mod+Control+j move workspace to output down
 bindsym $mod+Control+k move workspace to output up
 bindsym $mod+Control+l move workspace to output right
+
+# Make the currently focused window a scratchpad
+bindsym $mod+Shift+minus move scratchpad
+# Show the first scratchpad window
+bindsym $mod+minus scratchpad show
+
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -169,7 +163,6 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-
 #solarized pallete
 #set $base03    #002b36
 #set $base02    #073642
@@ -191,12 +184,13 @@ bindsym $mod+r mode "resize"
 # window colors
 set $bg-color               #073642
 set $bg-bar-color           #002b36
-set $bg-bar-focused         #073642
+set $bg-bar-focused         #586e75
 set $inactive-bg-color      #002b36
 set $urgent-bg-color        #dc322f
 set $text-color             #eee8d5
 set $inactive-text-color    #657b83
 
+# Colors                border              background          text                    indicator       child_border
 client.focused          $bg-color           $bg-color           $text-color             #4c7899
 client.unfocused        $inactive-bg-color  $inactive-bg-color  $inactive-text-color    #333333
 client.focused_inactive $inactive-bg-color  $inactive-bg-color  $inactive-text-color    #333333
@@ -206,11 +200,10 @@ client.urgent           $urgent-bg-color    $urgent-bg-color    $text-color     
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-       #font pango:Inconsolata-dz for Powerline 10
        font pango:Roboto Mono for Powerline Regular 10
-       # font pango:DejaVu Sans Mono for Powerline Book 10
+
        # status_command i3status
-       status_command py3status -c ~/.config/i3/py3status.conf
+       status_command py3status --dbus-notify -c ~/.config/i3/py3status.conf
        colors {
                background $bg-bar-color
                separator #757575
@@ -219,22 +212,27 @@ bar {
                inactive_workspace  $inactive-bg-color  $inactive-bg-color  $inactive-text-color
                urgent_workspace    $urgent-bg-color    $urgent-bg-color    $text-color
        }
-       #tray_output eDP1
 }
 
-# volume controls
+#screenshot control
+#full workspace
+bindsym --release Print exec "scrot -m ~/Pictures/screenshots/%s_%H%M_%d.%m.%Y_$wx$h.png"
+#current window
+bindsym --release Shift+Print exec "scrot -u -d 4 ~/Pictures/screenshots/%s_%H%M_%d%m%Y_$wx$h.png"
+
+#volume controls
 bindsym XF86AudioRaiseVolume  exec "amixer -q sset Master 3%+ unmute; py3-cmd refresh volume_status"
 bindsym XF86AudioLowerVolume  exec "amixer -q sset Master 3%- unmute; py3-cmd refresh volume_status"
 bindsym XF86AudioMute         exec "amixer -q sset Master toggle; py3-cmd refresh volume_status"
+bindsym XF86AudioMicMute      exec "amixer -q sset Capture toggle; py3-cmd refresh volume_status"
 
 # screen brightness controls
-bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
-bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
+bindsym XF86MonBrightnessUp exec "xbacklight -inc 10 ; py3-cmd refresh backlight"
+bindsym XF86MonBrightnessDown exec "xbacklight -dec 10 ; py3-cmd refresh backlight"
 
 # Startup Programs
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
-exec --no-startup-id caffeine
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 
 # gnome integration
@@ -242,11 +240,31 @@ exec --no-startup-id /usr/lib/gnome-settings-daemon/gsd-xsettings
 exec_always --no-startup-id gnome-power-manager
 
 # set wallpaper
-exec --no-startup-id feh --bg-scale /usr/share/backgrounds/gnome/Terraform-green.jpg
+exec --no-startup-id feh --bg-scale ~/.wall-arch.jpg
 
+#ws terminals
 assign [class="Terminator"] $workspace1
+assign [class="Gnome-terminal"] $workspace1
+
+#ws browsers
 assign [class="Firefox"] $workspace2
+assign [class="Chromium"] $workspace2
+assign [class="Google Chrome"] $workspace2
+
+#ws communication
 assign [class="Thunderbird"] $workspace3
 assign [class="Hexchat"] $workspace3
 assign [class="Telegram"] $workspace3
+assign [class="choqok"] $workspace3
+assign [class="Mattermost"] $workspace3
+assign [class="Slack"] $workspace3
 
+for_window [class="choqok"]  floating enable
+for_window [class="Mattermost"]  floating enable
+
+#ws files
+assign [class="Nautilus"] $workspace4
+
+#ws music
+for_window [class="Spotify"] move to workspace $workspace10
+for_window [class="eu.tiliado.NuvolaAppBandcamp"] move to workspace $workspace10
