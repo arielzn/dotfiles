@@ -113,6 +113,8 @@
       - i3status
       - network-manager-applet
       - powerline
+      - rofi
+      - scrot
 
   - name: Install extra stuff
     package:
