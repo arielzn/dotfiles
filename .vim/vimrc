@@ -40,3 +40,13 @@ let g:netrw_liststyle = 3
 
 "remove all trailing whitespace by pressing F8
 nnoremap <F8> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
+
+" stuff for python PIP8
+au BufNewFile,BufRead *.py set
+    \ tabstop=4
+    \ softtabstop=4
+    \ shiftwidth=4
+    \ textwidth=79
+    \ expandtab
+    \ autoindent
+    \ fileformat=unix

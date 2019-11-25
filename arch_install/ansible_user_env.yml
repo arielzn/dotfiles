@@ -46,20 +46,23 @@
       marker: '" {mark} Vundle plugin manager setup'
       path: ~/.vim/vimrc
       block: |
-        set nocompatible              " be iMproved, required
-        filetype off                  " required
+        set nocompatible
+        filetype off
 
-        "set the runtime path to include Vundle and initialize
+        " set the runtime path to include Vundle and initialize
         set rtp+=~/.vim/bundle/Vundle.vim
         call vundle#begin()
 
         Plugin 'tpope/vim-vinegar'
         Plugin 'vim-airline/vim-airline'
         Plugin 'vim-airline/vim-airline-themes'
+        Plugin 'nvie/vim-flake8'
+        Plugin 'lervag/vimtex'
+        Plugin 'airblade/vim-gitgutter'
 
-        " All of your Plugins must be added before the following line
-        call vundle#end()            " required
-        filetype plugin indent on    " required
+        " All the Plugins must be added before the following line
+        call vundle#end()
+        filetype plugin indent on
 
         let g:airline_powerline_fonts = 1
 
