@@ -28,6 +28,7 @@
       - "alias ls='ls --color=auto'"
       - "alias ll='ls -alFh'"
       - "alias la='ls -A'"
+      - "export HISTSIZE=50000"
       - "source ~/.powerbash.sh"
       - "powerbash host on"
       - "powerbash path full"
