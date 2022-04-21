@@ -1,4 +1,6 @@
 
+set guifont=RobotoMono\ Nerd\ Font\ Regular\ 10
+
 syntax on
 let g:gruvbox_number_column='bg1'
 colorscheme gruvbox
