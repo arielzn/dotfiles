@@ -14,6 +14,12 @@
       dest: ~/.powerbash.sh
       remote_src: yes
 
+  - name: Setup custom tmux.conf
+    copy:
+      src: /tmp/dotfiles/.tmux.conf
+      dest: ~/.tmux.conf
+      remote_src: yes
+
   - name: Customize bash
     lineinfile:
       dest: ~/.bashrc
