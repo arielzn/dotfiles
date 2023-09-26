@@ -8,11 +8,14 @@
       repo: 'https://github.com/arielzn/dotfiles.git'
       dest: /tmp/dotfiles
 
-  - name: Copy powerbash.sh script
+  - name: Copy files for bashrc
     copy:
-      src: /tmp/dotfiles/.powerbash.sh
-      dest: ~/.powerbash.sh
+      src: "/tmp/dotfiles/{{ item }}"
+      dest: "~/{{ item }}"
       remote_src: yes
+    with_items:
+      - ".powerbash.sh"
+      - ".cool_funcs.sh"
 
   - name: Setup custom tmux.conf
     copy:
@@ -25,10 +28,14 @@
       dest: ~/.bashrc
       line: "{{ item }}"
     with_items:
+      - "stty stop ''"
+      - "stty start ''"
+      - "export EDITOR=vim"
+      - "export HISTSIZE=50000"
       - "alias ls='ls --color=auto'"
       - "alias ll='ls -alFh'"
       - "alias la='ls -A'"
-      - "export HISTSIZE=50000"
+      - "source ~/.cool_funcs.sh"
       - "source ~/.powerbash.sh"
       - "powerbash host on"
       - "powerbash path full"
