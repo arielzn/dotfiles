@@ -9,17 +9,23 @@
       regexp: Color
       line: 'Color'
 
+  - name: Customize environment
+    lineinfile:
+      dest: /etc/environment
+      line: "{{ item }}"
+    with_items:
+      - "GVIM_ENABLE_WAYLAND=1"
+
   - name: Install Intel GPU drivers
     package:
       name: "{{ item }}"
       state: latest
     with_items:
       - libva-intel-driver
-      - libva-vdpau-driver
-      - libva-utils
-      - libvdpau-va-gl
-      - vdpauinfo
-      - xf86-video-intel
+      - intel-gpu-tools
+      #      - libva-utils
+      #      - libvdpau-va-gl
+      #      - vdpauinfo
 
   - name: Install basic tools
     package:
@@ -36,85 +42,50 @@
       - htop
       - iw
       - mlocate
-      - namcap
-      - ntp
+      - pacman-contrib
+      - chrony
+      - lshw
+      - usbutils
       - p7zip
-      - screen
-      - vim
-      - xorg-xbacklight
+      - tmux
+      - pwgen
+      - man-db
+      - fwupd
       - wget
+      - sof-firmware
 
-  - name: Install a basic Gnome DE
+  - name: Install Gnome DE
     package:
       name: "{{ item }}"
       state: latest
     with_items:
-      - adwaita-icon-theme
       - arc-gtk-theme
       - arc-icon-theme
-      - alsa-utils
-      - baobab
-      - blueman
-      - eog
-      - evince
-      - file-roller
-      - gdm
-      - gedit
-      - gnome-backgrounds
-      - gnome-calculator
-      - gnome-control-center
-      - gnome-desktop
-      - gnome-font-viewer
-      - gnome-keyring
-      - gnome-screenshot
-      - gnome-session
-      - gnome-settings-daemon
-      - gnome-shell
-      - gnome-shell-extensions
-      - gnome-system-monitor
-      - gnome-terminal
+      - pipewire
+      - pipewire-jack
+      - gnome
       - gnome-tweaks
-      - gnome-user-share
+      - eog
+      - file-roller
       - gucharmap
-      - gvfs
-      - gvfs-afc
-      - gvfs-goa
-      - gvfs-google
-      - gvfs-gphoto2
-      - gvfs-mtp
-      - gvfs-nfs
-      - gvfs-smb
-      - mousetweaks
-      - mutter
-      - nautilus
+      - gvim
+      - archlinux-appstream-data
+      - gnome-shell-extension-appindicator
       - networkmanager
       - networkmanager-openconnect
       - networkmanager-openvpn
-      - numix-gtk-theme
-      - pamixer
-      - polkit-gnome
-      - soundconverter
-      - sushi
-      - totem
-      - tracker
-      - ttf-roboto
-      - vino
 
-  - name: Install i3 wm
+  - name: Install sway wm
     package:
       name: "{{ item }}"
       state: latest
     with_items:
-      - awesome-terminal-fonts
-      - feh
-      - i3-wm
-      - i3blocks
-      - i3lock
-      - i3status
-      - network-manager-applet
-      - powerline
-      - rofi
-      - scrot
+      - sway
+      - foot
+      - wmenu
+      - swaylock
+      - swayidle
+      - swaybg
 
   - name: Install extra stuff
     package:
@@ -122,17 +93,33 @@
       state: latest
     with_items:
       - firefox
+      - thunderbird
+      - chromium
       - gimp
       - libreoffice-fresh
-      - ttf-roboto
       - vlc
+      - keepassxc
+      - ttf-roboto
+      - ttf-roboto-mono-nerd
+
+  - name: Install pikaur deps
+    package:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - pyalpm
+      - python-wheel
+      - python-hatchling
+      - python-build
+      - python-installer
+      - python-setuptools
+      - python-markdown-it-py
 
   - name: Get pikaur aur helper sources
     get_url:
       url: "https://aur.archlinux.org/cgit/aur.git/snapshot/{{ item }}"
       dest: "/tmp/{{ item }}"
     with_items:
-      - cower.tar.gz
       - pikaur.tar.gz
 
   - name: Insert global vim options in /etc/vimrc
@@ -155,7 +142,7 @@
       name: "{{ item }}"
       enabled: "yes"
     with_items:
-      - ntpd
+      - chronyd
       - gdm
       - NetworkManager
       - bluetooth
