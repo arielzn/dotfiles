@@ -52,6 +52,7 @@
       - man-db
       - fwupd
       - wget
+      - smartmontools
       - sof-firmware
 
   - name: Install Gnome DE
