@@ -1,4 +1,14 @@
 
+let g:vimtex_compiler_latexmk = {
+    \ 'options' : [
+    \   '-shell-escape',
+    \   '-verbose',
+    \   '-file-line-error',
+    \   '-synctex=1',
+    \   '-interaction=nonstopmode',
+    \ ],
+    \}
+
 set guifont=RobotoMono\ Nerd\ Font\ Regular\ 10
 
 syntax on
