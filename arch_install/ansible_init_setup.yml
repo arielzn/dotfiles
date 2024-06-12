@@ -54,6 +54,7 @@
       - wget
       - smartmontools
       - sof-firmware
+      - tlp
 
   - name: Install Gnome DE
     package:
@@ -147,3 +148,4 @@
       - gdm
       - NetworkManager
       - bluetooth
+      - tlp
