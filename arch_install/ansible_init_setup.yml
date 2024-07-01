@@ -55,6 +55,7 @@
       - smartmontools
       - sof-firmware
       - tlp
+      - systemd-resolvconf
 
   - name: Install Gnome DE
     package:
@@ -139,6 +140,19 @@
         set ignorecase
         set smartcase
 
+  - name: Setup /etc/resolv.conf for systemd-resolved
+    ansible.builtin.file:
+      src: /run/systemd/resolve/stub-resolv.conf
+      dest: /etc/resolv.conf
+      state: link
+
+  - name: Setup fallback dns
+    community.general.ini_file:
+      path: /etc/systemd/resolved.conf.d/fallback.conf
+      section: Resolve
+      option: FallbackDNS
+      value: "9.9.9.9 149.112.112.112 2620:fe::fe 2620:fe::9"
+
   - name: Ensure critical services are enabled
     service:
       name: "{{ item }}"
@@ -149,3 +163,4 @@
       - NetworkManager
       - bluetooth
       - tlp
+      - systemd-resolved
