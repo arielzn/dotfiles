@@ -1,0 +1,25 @@
+---
+
+- hosts: localhost
+  tasks:
+
+    - name: Install pkgs
+      package:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - fprintd
+
+    - name: Start required services
+      service:
+        name: "{{ item }}"
+        enabled: yes
+        state: started
+      with_items:
+        - fprintd
+
+    - name: Allow fingerprint unlock for sudo
+      ansible.builtin.lineinfile:
+        path: /etc/pam.d/sudo
+        insertbefore: 'auth.*include.*system-auth'
+        line: 'auth		sufficient	pam_fprintd.so'

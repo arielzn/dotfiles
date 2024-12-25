@@ -3,164 +3,221 @@
 - hosts: localhost
   tasks:
 
-  - name: Customize pacman.conf
-    lineinfile:
-      dest: /etc/pacman.conf
-      regexp: Color
-      line: 'Color'
+    - name: Customize pacman.conf
+      lineinfile:
+        dest: /etc/pacman.conf
+        regexp: Color
+        line: 'Color'
 
-  - name: Customize environment
-    lineinfile:
-      dest: /etc/environment
-      line: "{{ item }}"
-    with_items:
-      - "GVIM_ENABLE_WAYLAND=1"
+    - name: Customize environment
+      lineinfile:
+        dest: /etc/environment
+        line: "{{ item }}"
+      with_items:
+        - "GVIM_ENABLE_WAYLAND=1"
 
-  - name: Install Intel GPU drivers
-    package:
-      name: "{{ item }}"
-      state: latest
-    with_items:
-      - libva-intel-driver
-      - intel-gpu-tools
-      #      - libva-utils
-      #      - libvdpau-va-gl
-      #      - vdpauinfo
+    - name: Install Intel GPU drivers
+      package:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - libva-intel-driver
+        - intel-gpu-tools
 
-  - name: Install basic tools
-    package:
-      name: "{{ item }}"
-      state: latest
-    with_items:
-      - base-devel
-      - bash
-      - bash-completion
-      - binutils
-      - dmidecode
-      - expac
-      - git
-      - htop
-      - iw
-      - mlocate
-      - pacman-contrib
-      - chrony
-      - lshw
-      - usbutils
-      - p7zip
-      - tmux
-      - pwgen
-      - man-db
-      - fwupd
-      - wget
-      - smartmontools
-      - sof-firmware
-      - tlp
-      - systemd-resolvconf
+    - name: Remove vim as gvim provides it
+      package:
+        name: "{{ item }}"
+        state: absent
+      with_items:
+        - vim
 
-  - name: Install Gnome DE
-    package:
-      name: "{{ item }}"
-      state: latest
-    with_items:
-      - arc-gtk-theme
-      - arc-icon-theme
-      - pipewire
-      - pipewire-jack
-      - gnome
-      - gnome-tweaks
-      - eog
-      - file-roller
-      - gucharmap
-      - gvim
-      - archlinux-appstream-data
-      - gnome-shell-extension-appindicator
-      - networkmanager
-      - networkmanager-openconnect
-      - networkmanager-openvpn
+    - name: Install basic tools
+      package:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - base-devel
+        - bash
+        - bash-completion
+        - binutils
+        - dmidecode
+        - expac
+        - git
+        - htop
+        - iw
+        - mlocate
+        - pacman-contrib
+        - chrony
+        - lshw
+        - nvme-cli
+        - usbutils
+        - p7zip
+        - tmux
+        - pwgen
+        - net-tools
+        - gnu-netcat
+        - man-db
+        - fwupd
+        - wget
+        - smartmontools
+        - sof-firmware
+        - tlp
+        - systemd-resolvconf
+        - vnstat
 
-  - name: Install sway wm
-    package:
-      name: "{{ item }}"
-      state: latest
-    with_items:
-      - sway
-      - foot
-      - wmenu
-      - swaylock
-      - swayidle
-      - swaybg
+    - name: Install Gnome DE
+      package:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - arc-gtk-theme
+        - arc-icon-theme
+        - pipewire
+        - pipewire-jack
+        - gnome
+        - gnome-tweaks
+        - eog
+        - file-roller
+        - gucharmap
+        - gvim
+        - archlinux-appstream-data
+        - gnome-shell-extension-appindicator
+        - networkmanager
+        - networkmanager-openconnect
+        - networkmanager-openvpn
 
-  - name: Install extra stuff
-    package:
-      name: "{{ item }}"
-      state: latest
-    with_items:
-      - firefox
-      - thunderbird
-      - chromium
-      - gimp
-      - libreoffice-fresh
-      - vlc
-      - keepassxc
-      - ttf-roboto
-      - ttf-roboto-mono-nerd
+    - name: Install sway wm
+      package:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - sway
+        - foot
+        - wmenu
+        - swaylock
+        - swayidle
+        - swaybg
 
-  - name: Install pikaur deps
-    package:
-      name: "{{ item }}"
-      state: latest
-    with_items:
-      - pyalpm
-      - python-wheel
-      - python-hatchling
-      - python-build
-      - python-installer
-      - python-setuptools
-      - python-markdown-it-py
+    - name: Install extra stuff
+      package:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - firefox
+        - thunderbird
+        - chromium
+        - gimp
+        - libreoffice-fresh
+        - vlc
+        - keepassxc
+        - ttf-roboto
+        - ttf-roboto-mono-nerd
 
-  - name: Get pikaur aur helper sources
-    get_url:
-      url: "https://aur.archlinux.org/cgit/aur.git/snapshot/{{ item }}"
-      dest: "/tmp/{{ item }}"
-    with_items:
-      - pikaur.tar.gz
+    - name: Install pikaur deps
+      package:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - devtools
+        - pyalpm
+        - python-wheel
+        - python-hatchling
+        - python-build
+        - python-installer
+        - python-pysocks
+        - python-setuptools
+        - python-markdown-it-py
 
-  - name: Insert global vim options in /etc/vimrc
-    blockinfile:
-      insertbefore: EOF
-      marker: '" {mark} Ansible managed set basic vim options'
-      path: /etc/vimrc
-      block: |
-        syntax on
-        colorscheme koehler
-        set t_Co=256
-        set number
-        set wildmenu
-        set cursorline
-        set ignorecase
-        set smartcase
+    - name: Get pikaur aur helper sources
+      get_url:
+        url: "https://aur.archlinux.org/cgit/aur.git/snapshot/{{ item }}"
+        dest: "/tmp/{{ item }}"
+      with_items:
+        - pikaur.tar.gz
 
-  - name: Setup /etc/resolv.conf for systemd-resolved
-    ansible.builtin.file:
-      src: /run/systemd/resolve/stub-resolv.conf
-      dest: /etc/resolv.conf
-      state: link
+    - name: Insert global vim options in /etc/vimrc
+      blockinfile:
+        insertbefore: EOF
+        marker: '" {mark} Ansible managed set basic vim options'
+        path: /etc/vimrc
+        block: |
+          syntax on
+          colorscheme koehler
+          set t_Co=256
+          set number
+          set wildmenu
+          set cursorline
+          set ignorecase
+          set smartcase
 
-  - name: Setup fallback dns
-    community.general.ini_file:
-      path: /etc/systemd/resolved.conf.d/fallback.conf
-      section: Resolve
-      option: FallbackDNS
-      value: "9.9.9.9 149.112.112.112 2620:fe::fe 2620:fe::9"
 
-  - name: Ensure critical services are enabled
-    service:
-      name: "{{ item }}"
-      enabled: "yes"
-    with_items:
-      - chronyd
-      - gdm
-      - NetworkManager
-      - bluetooth
-      - tlp
-      - systemd-resolved
+    - name: Setup fallback dns
+      community.general.ini_file:
+        path: /etc/systemd/resolved.conf.d/fallback.conf
+        section: Resolve
+        option: FallbackDNS
+        value: "9.9.9.9 149.112.112.112 2620:fe::fe 2620:fe::9"
+
+    - name: Ensure critical services are enabled
+      service:
+        name: "{{ item }}"
+        enabled: yes
+        state: started
+      with_items:
+        - chronyd
+        - gdm
+        - NetworkManager
+        - bluetooth
+        - tlp
+        - systemd-resolved
+        - vnstat
+
+    - name: Check if resolv.conf is real file
+      ansible.builtin.stat:
+        path: /etc/resolv.conf
+      register: resolv_conf
+
+    - name: Remove resolv.conf if is real file
+      ansible.builtin.file:
+        path: /etc/resolv.conf
+        state: absent
+      when: resolv_conf.stat.islnk is defined and resolv_conf.stat.islnk == False
+
+    - name: Setup /etc/resolv.conf for systemd-resolved
+      ansible.builtin.file:
+        src: /run/systemd/resolve/stub-resolv.conf
+        dest: /etc/resolv.conf
+        state: link
+
+    - name: Setup fractional scaling for gnome 1/5
+      ansible.builtin.file:
+        path: /etc/dconf/profile
+        state: directory
+
+    - name: Setup fractional scaling for gnome 2/5
+      ansible.builtin.blockinfile:
+        path: /etc/dconf/profile/user
+        create: yes
+        block: |
+          user-db:user
+          system-db:local
+
+    - name: Setup fractional scaling for gnome 3/5
+      ansible.builtin.blockinfile:
+        path: /etc/dconf/db/local.d/00-hidpi
+        create: yes
+        block: |
+          [org/gnome/mutter]
+          experimental-features=['scale-monitor-framebuffer']
+
+    - name: Setup fractional scaling for gnome 4/5
+      ansible.builtin.blockinfile:
+        path: /etc/dconf/db/locks/hidpi
+        create: yes
+        block: |
+          /org/gnome/mutter/experimental-features
+      register: dconf_hidipi
+
+    - name: Setup fractional scaling for gnome 5/5
+      ansible.builtin.command: /usr/bin/dconf update
+      when: dconf_hidipi.changed
